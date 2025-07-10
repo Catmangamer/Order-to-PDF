@@ -44,19 +44,47 @@
         const clientId = "J1G5HH7DNR95M";
         const redirectUri = "https://catmangamer.github.io/Order-to-PDF/";
 
-        // Step 1: Extract access_token & merchant_id from URL
-        function parseTokenFromUrl() {
-            const hash = window.location.hash.substring(1); // strip #
+        function getTokenFromHash() {
+            const hash = window.location.hash.substring(1);
             const params = new URLSearchParams(hash);
-            return {
-                token: params.get("access_token"),
-                merchantId: params.get("merchant_id")
-            };
+            const token = params.get("access_token");
+            if (token) {
+                sessionStorage.setItem("access_token", token);
+            }
+            return token;
         }
 
-        const { token, merchantId } = parseTokenFromUrl();
+        function getToken() {
+            return getTokenFromHash() || sessionStorage.getItem("access_token");
+        }
+
+        function getMerchantId() {
+            const search = new URLSearchParams(window.location.search);
+            const merchantId = search.get("merchant_id");
+            if (merchantId) {
+                sessionStorage.setItem("merchant_id", merchantId);
+            }
+            return merchantId || sessionStorage.getItem("merchant_id");
+        }
+
+        const token = getToken();
+        const merchantId = getMerchantId();
+
         const status = document.getElementById("status");
-        const orderList = document.getElementById("orderList");
+        const orderList = document.getElementById("orders");
+
+        // Step 2: Get merchant_id from either URL or session
+        function getMerchantId() {
+            const search = new URLSearchParams(window.location.search);
+            const merchantId = search.get("merchant_id");
+            if (merchantId) {
+                sessionStorage.setItem("merchant_id", merchantId);
+            }
+            return merchantId || sessionStorage.getItem("merchant_id");
+        }
+
+        const token = getToken();
+        const merchantId = getMerchantId();
 
         // Step 2: If token exists, fetch orders
         if (token && merchantId) {
