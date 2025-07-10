@@ -7,16 +7,21 @@ const merchantId = "EMFVG7E4J3GN1";
 
 const orderDat = {
     method: 'GET',
-    headers: headers: {accept: 'application/json', authorization: 'Bearer '+accessToken}
+    headers: {accept: 'application/json', authorization: 'Bearer '+accessToken}
 };
 
 fetch('https://api.clover.com/v3/merchants/'+merchantId+'/orders', orderDat)
     .then(res => res.json())
     .then(res => console.log(res))
     .catch(err => console.error(err));
-console.log(options);
 
-const data = await.orderDat.json();
+
+
+async function getOrders(){
+    document.getElementById("orderData").innerHTML = orderDat;
+    console.log(orderDat);
+    const data = await orderDat.json();
+}
 
 async function generatePDF() {
     const { jsPDF } = window.jspdf;
