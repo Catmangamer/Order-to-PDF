@@ -1,42 +1,99 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Clover Order to PDF</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Clover Orders to PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background: #f9f9f9;
+        }
+
+        h1 {
+            color: #3c3c3c;
+        }
+
+        button {
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        #orderList {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        .order {
+            padding: 0.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Order Lookup</h1>
-    <button onclick="getOrders()">Fetch Orders</button>
-    <div id="orderData"></div>
-    <button onclick="generatePDF()">Download as PDF</button>
-    <script src="script.js"></script>
 
-    <div class="box">
-        <p><strong>Authorization Code:</strong></p>
-        <p class="code" id="authCode">Waiting for code...</p>
-        <button onclick="copyCode()">📋 Copy Code to Clipboard</button>
-    </div>
+    <h1>🧾 Clover Orders</h1>
+    <div id="status">Checking for access token...</div>
+    <div id="orderList"></div>
 
     <script>
-    // Extract ?code=... from the URL
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
+        const clientId = "J1G5HH7DNR95M";
+        const redirectUri = "https://catmangamer.github.io/Order-to-PDF/";
 
-    const codeDisplay = document.getElementById("authCode");
+        // Step 1: Extract access_token & merchant_id from URL
+        function parseTokenFromUrl() {
+            const hash = window.location.hash.substring(1); // strip #
+            const params = new URLSearchParams(hash);
+            return {
+                token: params.get("access_token"),
+                merchantId: params.get("merchant_id")
+            };
+        }
 
-    if (code) {
-      codeDisplay.textContent = code;
-    } else {
-      codeDisplay.textContent = "No code found in URL.";
-    }
+        const { token, merchantId } = parseTokenFromUrl();
+        const status = document.getElementById("status");
+        const orderList = document.getElementById("orderList");
 
-    function copyCode() {
-      if (code) {
-        navigator.clipboard.writeText(code).then(() => {
-          alert("Code copied to clipboard!");
-        });
-      }
-    }
+        // Step 2: If token exists, fetch orders
+        if (token && merchantId) {
+            status.textContent = "✅ Authorized. Fetching orders...";
+
+            fetch(`https://api.clover.com/v3/merchants/${merchantId}/orders`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data || !data.elements) {
+                        status.textContent = "❌ No orders found or invalid response.";
+                        return;
+                    }
+
+                    status.textContent = `✅ ${data.elements.length} orders loaded.`;
+                    data.elements.forEach(order => {
+                        const div = document.createElement("div");
+                        div.className = "order";
+                        div.textContent = `Order ID: ${order.id} | Created: ${new Date(order.createdTime).toLocaleString()}`;
+                        orderList.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching orders:", err);
+                    status.textContent = "❌ Failed to fetch orders. Check console.";
+                });
+
+        } else {
+            // Step 3: If no token, redirect to Clover login (Low Trust OAuth)
+            status.textContent = "🔐 Redirecting to Clover for authorization...";
+            const authUrl = `https://www.clover.com/oauth/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}`;
+            window.location.href = authUrl;
+        }
     </script>
+
 </body>
 </html>
