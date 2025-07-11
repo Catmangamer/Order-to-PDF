@@ -13,7 +13,7 @@ async function Auth() {
     const accessToken = params.get("access_token");
     const search = new URLSearchParams(window.location.search);
     const merchantId = search.get("merchant_id");
-    console.log("Hash: " + hash + "\nParams: " + params + "\nToken: " + token + "\nSearch: " + search + "\nMerchantID: " + merchantId);
+    console.log("Hash: " + hash + "\nParams: " + params + "\nToken: " + accessToken + "\nSearch: " + search + "\nMerchantID: " + merchantId);
     if (accessToken && merchantId) {
 
     }
