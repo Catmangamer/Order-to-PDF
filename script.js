@@ -1,5 +1,5 @@
-const accessToken;
-const merchantId;
+var accessToken = "";
+var merchantId = "";
 // Client ID: J1G5HH7DNR95M
 // Merchant ID: EMFVG7E4J3GN1
 
@@ -14,7 +14,7 @@ async function Auth() {
     accessToken = params.get("access_token");
     const search = new URLSearchParams(window.location.search);
     merchantId = search.get("merchant_id");
-    
+    console.log("Access Token: " + accessToken + "\nMerchant ID: " + merchantId);
     if (accessToken && merchantId) {
         document.getElementById("status").textContent = "Authenticated! Click Order Button to Get A List of Orders";
     }
