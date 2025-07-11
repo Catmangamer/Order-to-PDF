@@ -14,23 +14,11 @@
             color: #3c3c3c;
         }
 
-        button {
-            padding: 0.6rem 1rem;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-        }
-
         #orderList {
             background: white;
             padding: 1rem;
             border-radius: 8px;
             box-shadow: 0 0 8px rgba(0,0,0,0.1);
-        }
-
-        .order {
-            padding: 0.5rem;
-            border-bottom: 1px solid #ddd;
         }
     </style>
 </head>
@@ -39,89 +27,8 @@
     <h1>🧾 Clover Orders</h1>
     <div id="status">Checking for access token...</div>
     <div id="orderList"></div>
-
-    <script>
-        const clientId = "J1G5HH7DNR95M";
-        const redirectUri = "https://catmangamer.github.io/Order-to-PDF/";
-
-        function getTokenFromHash() {
-            const hash = window.location.hash.substring(1);
-            const params = new URLSearchParams(hash);
-            const token = params.get("access_token");
-            if (token) {
-                sessionStorage.setItem("access_token", token);
-            }
-            return token;
-        }
-
-        function getToken() {
-            return getTokenFromHash() || sessionStorage.getItem("access_token");
-        }
-
-        function getMerchantId() {
-            const search = new URLSearchParams(window.location.search);
-            const merchantId = search.get("merchant_id");
-            if (merchantId) {
-                sessionStorage.setItem("merchant_id", merchantId);
-            }
-            return merchantId || sessionStorage.getItem("merchant_id");
-        }
-
-        const token = getToken();
-        const merchantId = getMerchantId();
-
-        const status = document.getElementById("status");
-        const orderList = document.getElementById("orders");
-
-        // Step 2: Get merchant_id from either URL or session
-        function getMerchantId() {
-            const search = new URLSearchParams(window.location.search);
-            const merchantId = search.get("merchant_id");
-            if (merchantId) {
-                sessionStorage.setItem("merchant_id", merchantId);
-            }
-            return merchantId || sessionStorage.getItem("merchant_id");
-        }
-
-        const token = getToken();
-        const merchantId = getMerchantId();
-
-        // Step 2: If token exists, fetch orders
-        if (token && merchantId) {
-            status.textContent = "✅ Authorized. Fetching orders...";
-
-            fetch(`https://api.clover.com/v3/merchants/${merchantId}/orders`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (!data || !data.elements) {
-                        status.textContent = "❌ No orders found or invalid response.";
-                        return;
-                    }
-
-                    status.textContent = `✅ ${data.elements.length} orders loaded.`;
-                    data.elements.forEach(order => {
-                        const div = document.createElement("div");
-                        div.className = "order";
-                        div.textContent = `Order ID: ${order.id} | Created: ${new Date(order.createdTime).toLocaleString()}`;
-                        orderList.appendChild(div);
-                    });
-                })
-                .catch(err => {
-                    console.error("Error fetching orders:", err);
-                    status.textContent = "❌ Failed to fetch orders. Check console.";
-                });
-
-        } else {
-            // Step 3: If no token, redirect to Clover login (Low Trust OAuth)
-            status.textContent = "🔐 Redirecting to Clover for authorization...";
-            const authUrl = `https://www.clover.com/oauth/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}`;
-            window.location.href = authUrl;
-        }
-    </script>
+    <button onclick="getOrders()">Fetch Orders</button>
+    <script src="script.js"></script>
 
 </body>
 </html>

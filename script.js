@@ -10,15 +10,12 @@ const orderDat = {
     headers: {accept: 'application/json', authorization: 'Bearer '+accessToken}
 };
 
-fetch('https://api.clover.com/v3/merchants/'+merchantId+'/orders', orderDat)
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .catch(err => console.error(err));
-
-
-
-async function getOrders(){
-    document.getElementById("orderData").innerHTML = orderDat;
+async function getOrders() {
+    fetch('https://api.clover.com/v3/merchants/' + merchantId + '/orders', orderDat)
+        .then(res => res.json())
+        .then(res => console.log(res))
+        .catch(err => console.error(err));
+    document.getElementById("orderList").innerHTML = orderDat;
     console.log(orderDat);
     const data = await orderDat.json();
 }
