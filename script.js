@@ -1,4 +1,5 @@
-
+const accessToken;
+const merchantId;
 // Client ID: J1G5HH7DNR95M
 // Merchant ID: EMFVG7E4J3GN1
 
@@ -10,12 +11,12 @@ const orderDat = {
 async function Auth() {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
-    const accessToken = params.get("access_token");
+    accessToken = params.get("access_token");
     const search = new URLSearchParams(window.location.search);
-    const merchantId = search.get("merchant_id");
-    console.log("Hash: " + hash + "\nParams: " + params + "\nToken: " + accessToken + "\nSearch: " + search + "\nMerchantID: " + merchantId);
+    merchantId = search.get("merchant_id");
+    
     if (accessToken && merchantId) {
-
+        document.getElementById("status").textContent = "Authenticated! Click Order Button to Get A List of Orders";
     }
     else {
         document.getElementById("status").textContent = "Redirecting to Clover for OAuth...";
