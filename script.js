@@ -2,16 +2,17 @@
 var merchantId = "";
 var refreshToken = "";
 // Client ID: J1G5HH7DNR95M
-const clientID = "CG0MRHP5TP8QE";
+const clientID = "J1G5HH7DNR95M";
+const clientSecret = "";
 //Sandbox Client ID: CG0MRHP5TP8QE
 //Sandbox Client Secret: 720c8ac5-22be-02f9-fb42-3a4a0a621fab
 
 //Sandbox Merchant ID: B3MRAVHXRY7C1
 //Sandbox 
-merchantId = "B3MRAVHXRY7C1";
+merchantId = "";
 
-const cloverAPIURL = "https://sandbox.dev.clover.com";
-const cloverOAuthURL = "https://sandbox.dev.clover.com";
+const cloverAPIURL = "https://api.clover.com";
+const cloverOAuthURL = "https://www.clover.com";
 
 async function Auth() {
     // Finds Code in URL
@@ -21,8 +22,32 @@ async function Auth() {
     //Sandbox Access Token
     accessToken = window.location.hash.substring(14);
     console.log("Access Token: " + accessToken);
-
-    if (code && code_verifier) {
+    if (clientSecret) {
+        fetch(cloverOAuthURL + "/oauth/token", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                grant_type: "authorization_code",
+                code: code,
+                redirect_uri: 'https://catmangamer.github.io/Order-to-PDF/',
+                client_id: clientID,
+                client_secret: clientSecret
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                var { access_token, merchant_id, refresh_token } = data;
+                accessToken = access_token;
+                merchantId = merchant_id;
+                refreshToken = refresh_token;
+                console.log("✅ Token:", accessToken);
+                sessionStorage.setItem("access_token", accessToken);
+                sessionStorage.setItem("merchant_id", merchantId);
+                sessionStorage.setItem("refresh_token", refreshToken);
+            })
+            .catch(err => console.error("Token exchange failed", err));
+    }
+    else if (code && code_verifier) {
         fetch(cloverOAuthURL + "/oauth/token", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -52,18 +77,20 @@ async function Auth() {
             method: "POST",
             body: {
                 client_id: clientID,
-                client_secret: '720c8ac5- 22be- 02f9 - fb42 - 3a4a0a621fab',
+                client_secret: '720c8ac5-22be-02f9-fb42-3a4a0a621fab',
                 code: code
             }
         })
     }
-    else if (!accessToken){
+    else if (!accessToken) {
         document.getElementById("status").textContent = "Redirecting to Clover for OAuth...";
         generatePKCECodes().then(({ code_verifier, code_challenge }) => {
-            sessionStorage.setItem("code_verifier", code_verifier); 
-            const authUrl = cloverOAuthURL+'/oauth/authorize?client_id='+clientID+'&response_type=token&redirect_uri=https://catmangamer.github.io/Order-to-PDF/' + `&code_challenge=${code_challenge}` + '&code_challenge_method=S256';
+            sessionStorage.setItem("code_verifier", code_verifier);
+            const authUrl = cloverOAuthURL + '/oauth/authorize?client_id=' + clientID + '&response_type=token&redirect_uri=https://catmangamer.github.io/Order-to-PDF/' + `&code_challenge=${code_challenge}` + '&code_challenge_method=S256';
             window.location.href = authUrl;
         });
+    } else {
+        document.getElementById("status").textContent = "Authenticated!";
     }
 }
 
