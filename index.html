@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    
     <script src="https://unpkg.com/pdf-lib"></script>
     <title>Order to PDF</title>
     <style>
@@ -23,19 +24,20 @@
         }
     </style>
 </head>
-    <body>
-        <script src="script.js"></script>
-        <h1>Order To PDF</h1>
-        <div id="status">Status: Unauthenticated</div>
+<body>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+    <h1>Order To PDF</h1>
+    <div id="status">Status: Unauthenticated</div>
 
-        <button onclick="Auth()">Authenticate Here</button>
+    <button onclick="Auth()">Authenticate Here</button>
 
-        <div id="orderList"></div>
+    <div id="orderList"></div>
 
-        <button onclick="getOrders()">Fetch Orders</button>
+    <button onclick="getOrders()">Fetch Orders</button>
 
-        <div id="orders"></div>
+    <div id="orders"></div>
 
-        <button onclick="generatePDF()">Get PDF</button>
-    </body>
+    <button onclick="generatePDF()">Get PDF</button>
+</body>
 </html>

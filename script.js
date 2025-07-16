@@ -164,7 +164,7 @@ async function makeOrder(typeOrder) {
 
 async function generatePDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF();   
     doc.text(JSON.stringify(orderJSON), 100, 100);  
     doc.output('dataurlnewwindow');
 }
