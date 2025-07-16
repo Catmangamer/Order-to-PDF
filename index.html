@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Order to PDF</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                padding: 2rem;
-                background: #f9f9f9;
-            }
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/pdf-lib"></script>
+    <title>Order to PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background: #f9f9f9;
+        }
 
-            h1 {
-                color: #3c3c3c;
-            }
+        h1 {
+            color: #3c3c3c;
+        }
 
-            #orderList {
-                background: white;
-                padding: 1rem;
-                border-radius: 8px;
-                box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            }
-        </style>
-    </head>
+        #orderList {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
     <body>
         <script src="script.js"></script>
-
         <h1>Order To PDF</h1>
-
         <div id="status">Checking for access token...</div>
 
         <button onclick="Auth()">Authenticate Here</button>
