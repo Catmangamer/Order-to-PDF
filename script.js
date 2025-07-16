@@ -8,8 +8,8 @@ const clientSecret = "720c8ac5-22be-02f9-fb42-3a4a0a621fab";
 //Sandbox Client Secret: 720c8ac5-22be-02f9-fb42-3a4a0a621fab
 
 //Sandbox Merchant ID: B3MRAVHXRY7C1
-//Sandbox 
-merchantId = "";
+//Sandbox
+var orderJSON = null;
 
 const cloverAPIURL = "https://sandbox.dev.clover.com";
 const cloverOAuthURL = "https://sandbox.dev.clover.com";
@@ -120,8 +120,8 @@ async function getOrders() {
     };
     fetch(cloverAPIURL + '/v3/merchants/' + merchantId + '/orders', orderDat)
         .then(res => res.json())
-        .then(res => document.getElementById("orders").innerHTML = res)
         .then(res => console.log("Order Data: " + JSON.stringify(res)))
+        .then(res => orderJSON = res)
         .catch(err => console.error(err));
     try {
         const res = await fetch(cloverAPIURL + '/v3/merchants/' + merchantId + '/orders', orderDat);
@@ -131,6 +131,7 @@ async function getOrders() {
     } catch (err) {
         console.error("Failed to fetch orders:", err);
     }
+    document.getElementById("orders").innerHTML = orderJSON;
 }
 
 async function makeOrder(typeOrder) {
@@ -163,7 +164,7 @@ async function makeOrder(typeOrder) {
 
 async function generatePDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({});
+    const doc = new jsPDF();
+    doc.text(JSON.stringify(orderJSON), 100, 100);  
     doc.output('dataurlnewwindow');
-    doc.save("order.pdf");
 }
