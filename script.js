@@ -2,8 +2,8 @@
 var merchantId = "";
 var refreshToken = "";
 // Client ID: J1G5HH7DNR95M
-const clientID = "J1G5HH7DNR95M";
-const clientSecret = "";
+const clientID = "CG0MRHP5TP8QE";
+const clientSecret = "720c8ac5-22be-02f9-fb42-3a4a0a621fab";
 //Sandbox Client ID: CG0MRHP5TP8QE
 //Sandbox Client Secret: 720c8ac5-22be-02f9-fb42-3a4a0a621fab
 
