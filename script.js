@@ -118,20 +118,16 @@ async function getOrders() {
         method: 'GET',
         headers: { accept: 'application/json', authorization: 'Bearer ' + accessToken }
     };
-    fetch(cloverAPIURL + '/v3/merchants/' + merchantId + '/orders', orderDat)
-        .then(res => res.json())
-        .then(res => console.log("Order Data: " + JSON.stringify(res)))
-        .then(res => orderJSON = res)
-        .catch(err => console.error(err));
     try {
         const res = await fetch(cloverAPIURL + '/v3/merchants/' + merchantId + '/orders', orderDat);
         const json = await res.json();
         console.log(json);
-        document.getElementById("orderList").textContent = JSON.stringify(json);
+        orderJSON = JSON.stringify(json);
     } catch (err) {
         console.error("Failed to fetch orders:", err);
     }
-    document.getElementById("orders").innerHTML = orderJSON;
+
+    document.getElementById("orderList").innerHTML = orderJSON;
 }
 
 async function makeOrder(typeOrder) {
@@ -155,7 +151,6 @@ async function makeOrder(typeOrder) {
             }
         })
     };
-
     fetch('https://sandbox.dev.clover.com/v3/merchants/B3MRAVHXRY7C1/atomic_order/orders', options)
         .then(res => res.json())
         .then(res => console.log(res))
@@ -164,7 +159,9 @@ async function makeOrder(typeOrder) {
 
 async function generatePDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();   
-    doc.text(JSON.stringify(orderJSON), 100, 100);  
+    const doc = new jsPDF();
+    const maxWidth = 100;
+    const wrappedText = doc.splitTextToSize(orderJSON, maxWidth);
+    doc.text(wrappedText, 10, 10);
     doc.output('dataurlnewwindow');
 }
