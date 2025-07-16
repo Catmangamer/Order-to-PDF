@@ -17,12 +17,14 @@ const cloverOAuthURL = "https://sandbox.dev.clover.com";
 async function Auth() {
     // Finds Code in URL
     const code = new URLSearchParams(window.location.search).get("code");
+    merchantId = new URLSearchParams(window.location.search).get("merchant_id");
     const code_verifier = sessionStorage.getItem("code_verifier");
 
     //Sandbox Access Token
     accessToken = window.location.hash.substring(14);
     console.log("Access Token: " + accessToken);
-    if (clientSecret) {
+    console.log("Client Secret: " + clientSecret);
+    if (clientSecret && code) {
         fetch(cloverOAuthURL + "/oauth/token", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -111,18 +113,18 @@ async function generatePKCECodes() {
 
 
 async function getOrders() {
-    console.log("Access Token: "+accessToken)
+    console.log("Access Token: " + accessToken)
     const orderDat = {
         method: 'GET',
         headers: { accept: 'application/json', authorization: 'Bearer ' + accessToken }
     };
-    fetch(cloverAPIURL+'/v3/merchants/' + merchantId + '/orders', orderDat)
+    fetch(cloverAPIURL + '/v3/merchants/' + merchantId + '/orders', orderDat)
         .then(res => res.json())
         .then(res => document.getElementById("orders").innerHTML = res)
         .then(res => console.log("Order Data: " + JSON.stringify(res)))
         .catch(err => console.error(err));
     try {
-        const res = await fetch(cloverAPIURL+'/v3/merchants/'+merchantId+'/orders', orderDat);
+        const res = await fetch(cloverAPIURL + '/v3/merchants/' + merchantId + '/orders', orderDat);
         const json = await res.json();
         console.log(json);
         document.getElementById("orderList").textContent = JSON.stringify(json);
