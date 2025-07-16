@@ -11,8 +11,8 @@ const clientSecret = "";
 //Sandbox 
 merchantId = "";
 
-const cloverAPIURL = "https://api.clover.com";
-const cloverOAuthURL = "https://www.clover.com";
+const cloverAPIURL = "https://sandbox.dev.clover.com";
+const cloverOAuthURL = "https://sandbox.dev.clover.com";
 
 async function Auth() {
     // Finds Code in URL
